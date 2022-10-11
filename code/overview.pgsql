@@ -1,0 +1,1 @@
+SELECT * FROM post_text_df LIMIT 1000
