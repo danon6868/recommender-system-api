@@ -48,7 +48,7 @@ def load_features():
 
     logger.info("Loading posts features")
     posts_features = pd.read_sql(
-        """SELECT * FROM public.posts_info_features""",
+        """SELECT * FROM public.posts_info_features_dl_litvinov_roberta""",
         con="postgresql://robot-startml-ro:pheiph0hahj1Vaif@postgres.lab.karpov.courses:6432/startml",
     )
 
