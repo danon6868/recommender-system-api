@@ -4,6 +4,7 @@ from pathlib import Path
 import pandas as pd
 import yaml
 import os
+import warnings
 from common_utils import TRAINING_CONFIG, timeit
 from data_handle_utils import LoadedData, extract_text_features
 
@@ -65,6 +66,7 @@ class DataHandler:
         whole_dataset = whole_dataset.set_index(["user_id", "post_id"])
         self.whole_dataset = whole_dataset
 
+    @timeit
     def run(self) -> None:
         logger.info("Load data.")
         self.load_data()
@@ -115,6 +117,66 @@ class DataHandler:
         )
 
         return loaded_data
+
+    def _save_data_locally(self):
+        logger.info("Save data locally.")
+        available_local_data = os.listdir(TRAINING_CONFIG["local_data_storage"])
+        if "feed_data.csv" not in available_local_data:
+            self.loaded_data.feed_data.to_csv(
+                os.path.join(TRAINING_CONFIG["local_data_storage"], "feed_data.csv")
+            )
+        else:
+            warnings.warn(
+                "feed_data is already in data folder. New table will not be saved.",
+                UserWarning,
+            )
+
+        if "user_info.csv" not in available_local_data:
+            self.loaded_data.feed_data.to_csv(
+                os.path.join(TRAINING_CONFIG["local_data_storage"], "user_info.csv")
+            )
+        else:
+            warnings.warn(
+                "user_info is already in data folder. New table will not be saved.",
+                UserWarning,
+            )
+
+        if "posts_info.csv" not in available_local_data:
+            logger.info(self.load_data.posts_info)
+            self.loaded_data.posts_info.to_csv(
+                os.path.join(TRAINING_CONFIG["local_data_storage"], "posts_info.csv")
+            )
+        else:
+            warnings.warn(
+                "posts_info is already in data folder. New table will not be saved.",
+                UserWarning,
+            )
+
+        if (
+            f"posts_info_{TRAINING_CONFIG['text_embeddings']}.csv"
+            not in available_local_data
+        ):
+            self.loaded_data.posts_info.to_csv(
+                os.path.join(
+                    TRAINING_CONFIG["local_data_storage"],
+                    f"posts_info_{TRAINING_CONFIG['text_embeddings']}.csv",
+                )
+            )
+        else:
+            warnings.warn(
+                f"posts_info_{TRAINING_CONFIG['text_embeddings']} is already in data folder. New table will not be saved.",
+                UserWarning,
+            )
+
+    def _save_data_pgsql(self):
+        logger.info("Save data on PgSQL server.")
+        logger.info(f"posts_info_features_{TRAINING_CONFIG['text_embeddings']}")
+        self.loaded_data.posts_info.to_sql(
+            f"posts_info_features_{TRAINING_CONFIG['text_embeddings']}",
+            con=self.config["pg_connection"],
+            schema="public",
+            if_exists="replace",
+        )
 
     def _read_config(self) -> Dict[str, Union[str, float, int]]:
         with open(self.config_path) as file:

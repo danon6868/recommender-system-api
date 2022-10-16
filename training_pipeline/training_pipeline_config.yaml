@@ -2,8 +2,8 @@
 pg_connection:
 local_data_storage: ../data
 random_state: 10101
-# can be tf-idf, bert, roberta, distilbert
-text_embeddings: tf-idf
+# can be tf_idf, bert, roberta, distilbert
+text_embeddings: tf_idf
 n_pca_components: 20
 n_kmeans_clusters: 15
 

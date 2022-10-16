@@ -22,6 +22,7 @@ class ModelTrainer:
             TRAINING_CONFIG["training_params"]["metric"]
         )
 
+    @timeit
     def train(self) -> "ModelTrainer":
         if self.fitted_model is not None:
             warnings.warn(
@@ -69,13 +70,14 @@ class ModelTrainer:
 
         return self
 
+    @timeit
     def save(self):
         if self.fitted_model is None:
             raise NotFittedError(
                 "Your should run train method before saving the model."
             )
         model_save_path = os.path.join(
-            "training_results", f"catboost_{TRAINING_CONFIG['text_embeddings']}"
+            "training_results", f"catboost_model_{TRAINING_CONFIG['text_embeddings']}"
         )
         logger.info(f"Saving model in {model_save_path}")
         self.fitted_model.save_model(model_save_path, format="cbm")

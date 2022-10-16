@@ -1,0 +1,8 @@
+models:
+  control: models/catboost_model_tf_idf
+  control_posts_features: tf_idf
+  test: models/catboost_model_tf_idf
+  test_posts_features: tf_idf
+
+user_salt: my_awesome_salt
+return_posts_number: 10

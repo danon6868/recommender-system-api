@@ -52,9 +52,9 @@ def get_clusters_features(embeddings: np.ndarray) -> pd.DataFrame:
     return cluster_features
 
 
-def extract_text_features(texts: pd.Series, method: str = "tf-idf"):
+def extract_text_features(texts: pd.Series, method: str = "tf_idf"):
     available_methods = {
-        "tf-idf": extract_text_features_tf_idf,
+        "tf_idf": extract_text_features_tf_idf,
         "bert": extract_text_features_transformers,
         "roberta": extract_text_features_transformers,
         "distilbert": extract_text_features_transformers,
