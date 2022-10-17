@@ -12,27 +12,39 @@ from data_handle_utils import LoadedData, extract_text_features
 
 
 class DataHandler:
+    """Class for manipulations with using data:
+    1. Loading from PgSQL database or local storage;
+    2. Feature extraction from text using either tf-idf, or transformers;
+    3. Saving data to PgSQL database or to local storage.
+    """
+
     def __init__(self) -> None:
         self.config = TRAINING_CONFIG
         self.loaded_data = None
         self.whole_dataset = None
 
     @timeit
-    def load_data(self):
+    def load_data(self) -> None:
+        """Loading from PgSQL database or local storage."""
+
         if self.config["pg_connection"] is None:
             self.loaded_data = self._load_data_locally()
         else:
             self.loaded_data = self._load_data_pgsql()
 
     @timeit
-    def save_data(self):
+    def save_data(self) -> None:
+        """Saving data to PgSQL database or to local storage."""
+
         if self.config["pg_connection"] is None:
             self._save_data_locally()
         else:
             self._save_data_pgsql()
 
     @timeit
-    def extract_text_features(self):
+    def extract_text_features(self) -> None:
+        """Feature extraction from text using either tf-idf, or transformers."""
+
         text_features = extract_text_features(
             self.loaded_data.posts_info["text"],
             method=TRAINING_CONFIG["text_embeddings"],
@@ -42,7 +54,9 @@ class DataHandler:
         )
 
     @timeit
-    def create_whole_dataset(self):
+    def create_whole_dataset(self) -> None:
+        """Construct the whole training dataset"""
+
         whole_dataset = pd.merge(
             self.loaded_data.feed_data,
             self.loaded_data.posts_info,
