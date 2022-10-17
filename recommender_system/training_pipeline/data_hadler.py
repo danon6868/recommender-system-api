@@ -55,7 +55,7 @@ class DataHandler:
 
     @timeit
     def create_whole_dataset(self) -> None:
-        """Construct the whole training dataset"""
+        """Construct the whole training dataset."""
 
         whole_dataset = pd.merge(
             self.loaded_data.feed_data,
@@ -84,6 +84,8 @@ class DataHandler:
 
     @timeit
     def run(self) -> None:
+        """Load raw tables, process texts and create the whole training dataset."""
+
         logger.info("Load data.")
         self.load_data()
 
@@ -96,6 +98,8 @@ class DataHandler:
         logger.info("Finished data loading and feature extraction.")
 
     def _load_data_pgsql(self) -> LoadedData:
+        """Load raw tables from PgSQL."""
+
         # There is LIMIT = 100000 for fast testing
         # it was removed during the work
         feed_data = pd.read_sql(
@@ -115,6 +119,8 @@ class DataHandler:
         return loaded_data
 
     def _load_data_locally(self) -> LoadedData:
+        """Load raw tables from local data storage."""
+
         self._check_local_data()
         feed_data = pd.read_csv(
             os.path.join(self.config["local_data_storage"], "feed_data.csv"),
@@ -134,7 +140,9 @@ class DataHandler:
 
         return loaded_data
 
-    def _save_data_locally(self):
+    def _save_data_locally(self) -> None:
+        """Save data in local data storage."""
+
         logger.info("Save data locally.")
         available_local_data = os.listdir(TRAINING_CONFIG["local_data_storage"])
         if "feed_data.csv" not in available_local_data:
@@ -184,7 +192,9 @@ class DataHandler:
                 UserWarning,
             )
 
-    def _save_data_pgsql(self):
+    def _save_data_pgsql(self) -> None:
+        """Save data in PdSQL database."""
+
         logger.info("Save data on PgSQL server.")
         logger.info(f"posts_info_features_{TRAINING_CONFIG['text_embeddings']}")
         self.loaded_data.posts_info.to_sql(
@@ -195,12 +205,20 @@ class DataHandler:
         )
 
     def _read_config(self) -> Dict[str, Union[str, float, int]]:
+        """Read workflow config.yaml.
+
+        Returns:
+            Dict[str, Union[str, float, int]]: Dictionary representation of workflow config.
+        """
+
         with open(self.config_path) as file:
             config = yaml.load(file, yaml.FullLoader)
 
         return config
 
-    def _check_local_data(self):
+    def _check_local_data(self) -> None:
+        """Check the availability of local data in local data storage if it was chosen in config."""
+
         if "local_data_storage" not in self.config:
             raise ValueError(
                 "No local data storage is provided as well as no PgSQL connection given."

@@ -9,6 +9,12 @@ from loguru import logger
 def read_config(
     config_path: Union[str, Path] = Path("training_pipeline_config.yaml")
 ) -> Dict[str, Union[str, float, int]]:
+    """Read workflow config.yaml.
+
+    Returns:
+        Dict[str, Union[str, float, int]]: Dictionary representation of workflow config.
+    """
+
     with open(config_path) as file:
         config = yaml.load(file, yaml.FullLoader)
 
@@ -19,6 +25,8 @@ TRAINING_CONFIG = read_config()
 
 
 def timeit(func):
+    """Decorator to measure the execution time of functions."""
+
     @wraps(func)
     def timeit_wrapper(*args, **kwargs):
         start_time = time.perf_counter()

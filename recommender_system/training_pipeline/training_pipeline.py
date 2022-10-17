@@ -6,8 +6,10 @@ from loguru import logger
 from data_hadler import DataHandler
 from model_trainer import ModelTrainer
 
+
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
+# TODO: This part should be put in main)
 
 data_handler = DataHandler()
 logger.info(data_handler.config)

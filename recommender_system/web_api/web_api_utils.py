@@ -184,6 +184,7 @@ def load_model(model_version: str) -> CatBoostClassifier:
     """
 
     model_path = get_model_path(model_version)
+    logger.info(f"Using {model_path} as {model_version} model.")
     loaded_model = CatBoostClassifier()
     loaded_model.load_model(model_path)
 

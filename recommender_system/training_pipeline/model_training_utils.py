@@ -16,12 +16,27 @@ def select_hyperparameters(
     y_train: pd.Series,
     y_test: pd.Series,
 ) -> Dict[str, Union[str, float, int]]:
+    """Select the best hyperparameters of CatBoostCLassifier using Optuna.
+
+    Args:
+        model_type (CatBoostClassifier): CatBoostClassifier.
+        X_train (pd.DataFrame): Train features.
+        X_test (pd.DataFrame): Test features.
+        y_train (pd.Series): Train targets.
+        y_test (pd.Series): Test targets.
+
+    Returns:
+        Dict[str, Union[str, float, int]]: The best set of hyperparameters of CatBoostCLassifier.
+    """
+
     metric_function = metrics.__getattribute__(
         TRAINING_CONFIG["training_params"]["metric"]
     )
     logger.info(f"Using {metric_function.__name__} as metric.")
 
-    def objective(trial):
+    def objective(trial: optuna.Trial) -> float:
+        """Objective function to be optimized by optuna."""
+
         params_range = TRAINING_CONFIG["training_params"]["optuna_search"][
             "search_params"
         ]

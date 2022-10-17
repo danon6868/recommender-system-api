@@ -1,9 +1,9 @@
 models:
   # can be tf_idf, bert, roberta, distilbert
-  control: models/catboost_model_tf_idf
-  control_posts_features: tf_idf
-  test: models/catboost_model_tf_idf
-  test_posts_features: tf_idf
+  control: models/catboost_model_distilbert
+  control_posts_features: distilbert
+  test: models/catboost_model_distilbert
+  test_posts_features: distilbert
 
 user_salt: my_awesome_salt
 return_posts_number: 1

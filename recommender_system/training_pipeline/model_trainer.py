@@ -12,6 +12,8 @@ from model_training_utils import select_hyperparameters
 
 
 class ModelTrainer:
+    """Class for model training and hyperparameter optimization."""
+
     def __init__(self, whole_dataset: pd.DataFrame) -> None:
         self.config = TRAINING_CONFIG
         self.model = CatBoostClassifier
@@ -26,6 +28,14 @@ class ModelTrainer:
 
     @timeit
     def train(self) -> "ModelTrainer":
+        """This method runs the whole training pipeline:
+        1. Check if the model is not already fitted;
+        2. Split data into train and test parts;
+        3. Select hyperparameters (HPs) using optuna if it's needed or just use default ones;
+        4. Then train model on train part using previously selected HPs and validate it with the test part of data;
+        5. Retrain model on the whole dataset if it's needed.
+        """
+
         if self.fitted_model is not None:
             warnings.warn(
                 "You already have fitted model in `self.fitted_model`. It will be overwritten.",
@@ -73,7 +83,13 @@ class ModelTrainer:
         return self
 
     @timeit
-    def save(self):
+    def save(self) -> None:
+        """Save fitted model.
+
+        Raises:
+            NotFittedError: If model is not fitted, it can't be saved.
+        """
+
         if self.fitted_model is None:
             raise NotFittedError(
                 "Your should run train method before saving the model."
@@ -84,7 +100,11 @@ class ModelTrainer:
         logger.info(f"Saving model in {model_save_path}")
         self.fitted_model.save_model(model_save_path, format="cbm")
 
-    def _train_test_split(self):
+    def _train_test_split(self) -> None:
+        """Time series train/test split. Date for splitting selected
+        based on `train_size` which is specified in `training_pipeline_config.yaml`.
+        """
+
         threshold_date_index = int(self.whole_dataset.shape[0] * self.train_size)
         sorted_timestamps = self.whole_dataset["timestamp"].sort_values().values
         threshold_date = sorted_timestamps[threshold_date_index]
