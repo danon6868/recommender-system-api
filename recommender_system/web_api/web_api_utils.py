@@ -1,14 +1,16 @@
 import hashlib
 import os
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Tuple, Union
-from datetime import datetime
-from loguru import logger
-from sqlalchemy import create_engine
-from catboost import CatBoostClassifier
+
 import pandas as pd
 import yaml
-from schema import Response, PostGet
+from catboost import CatBoostClassifier
+from loguru import logger
+from sqlalchemy import create_engine
+
+from schema import PostGet, Response
 
 
 def read_config(
