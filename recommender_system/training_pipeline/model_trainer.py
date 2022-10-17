@@ -1,10 +1,12 @@
 import os
-from loguru import logger
-import pandas as pd
 import warnings
+
+import pandas as pd
+from catboost import CatBoostClassifier
+from loguru import logger
 from sklearn import metrics
 from sklearn.exceptions import NotFittedError
-from catboost import CatBoostClassifier
+
 from common_utils import TRAINING_CONFIG, timeit
 from model_training_utils import select_hyperparameters
 

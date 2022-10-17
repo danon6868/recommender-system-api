@@ -1,8 +1,10 @@
-from dataclasses import dataclass
 import warnings
+from dataclasses import dataclass
+
+from loguru import logger
+
 from data_hadler import DataHandler
 from model_trainer import ModelTrainer
-from loguru import logger
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 

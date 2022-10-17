@@ -1,17 +1,19 @@
-from fastapi import FastAPI
-from web_api_utils import (
-    get_recommended_feed,
-    WEB_API_CONFIG,
-    load_model,
-    load_features,
-)
 from datetime import datetime
+
+from fastapi import FastAPI
+
 from schema import Response
+from web_api_utils import (
+    WEB_API_CONFIG,
+    get_recommended_feed,
+    load_features,
+    load_model,
+)
 
 
 app = FastAPI()
 
-
+# Load models and features for web service
 model_control = load_model("control")
 features_control = load_features("control")
 
