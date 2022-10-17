@@ -95,7 +95,8 @@ def load_raw_features_local(
     """Load raw tables from local data storage.
 
     Args:
-        model_version (str): Connection to PgSQL database.
+        model_version (str): Model version can be control or test.
+        This is specified in web_api_config.yaml.
 
     Returns:
         List[pd.DataFrame]: List of `liked_posts`, `posts_features`, `user_features` tables.
@@ -132,6 +133,16 @@ def load_raw_features_local(
 
 
 def load_features(model_version: str) -> List[pd.DataFrame]:
+    """Load raw tables for making predictions.
+
+    Args:
+        model_version (str): Model version can be control or test.
+        This is specified in web_api_config.yaml.
+
+    Returns:
+        List[pd.DataFrame]: List of `liked_posts`, `posts_features`, `user_features` tables.
+    """
+
     if TRAINING_CONFIG["pg_connection"] is None:
         features = load_raw_features_local(model_version)
     else:
@@ -143,12 +154,33 @@ def load_features(model_version: str) -> List[pd.DataFrame]:
 
 
 def get_model_path(model_version: str) -> str:
+    """Construct path to model based on model version,
+     and current configuration in web_api_config.yaml.
+
+    Args:
+        model_version (str): Model version can be control or test.
+        This is specified in web_api_config.yaml.
+
+    Returns:
+        str: Path to model for recommendations.
+    """
+
     model_path = WEB_API_CONFIG["models"][model_version]
 
     return model_path
 
 
 def load_model(model_version: str) -> CatBoostClassifier:
+    """Load CatBoostClassifier model.
+
+    Args:
+        model_version (str):  Model version can be control or test.
+        This is specified in web_api_config.yaml.
+
+    Returns:
+        CatBoostClassifier: Loaded CatBoostClassifier model.
+    """
+
     model_path = get_model_path(model_version)
     loaded_model = CatBoostClassifier()
     loaded_model.load_model(model_path)
@@ -157,6 +189,16 @@ def load_model(model_version: str) -> CatBoostClassifier:
 
 
 def get_user_group(id: int) -> str:
+    """Define user group (control or test) calculating hash based on user_id
+    with salt (specified in web_api_config.yaml).
+
+    Args:
+        id (int): User id.
+
+    Returns:
+        str: User group.
+    """
+
     value_str = str(id) + WEB_API_CONFIG["user_salt"]
     value_num = int(hashlib.md5(value_str.encode()).hexdigest(), 16)
     percent = value_num % 100
@@ -172,16 +214,25 @@ def get_user_group(id: int) -> str:
 def calculate_features(
     features: List[pd.DataFrame], id: int, time: datetime
 ) -> Tuple[pd.DataFrame]:
+    """Here we are preparing features, and depending on the group, these can be
+    different features for different models.
+
+    Args:
+        features (List[pd.DataFrame]): Loaded raw tables.
+        id (int): User id.
+        time (datetime): Date and time when recommendation will be made.
+
+    Returns:
+        Tuple[pd.DataFrame]: The tuple of tables `user_features`, `user_posts_features`, `content`
+        which will be used for making a predictions and posts recommendation.
     """
-    Тут мы готовим фичи, при этом в зависимости от группы это могут быть
-    разные фичи под разные модели. Здесь это одни и те же фичи (то есть будто
-    бы разница в самих моделях)
-    """
+
     logger.info(f"user_id: {id}")
     logger.info("Reading features")
     user_features = features[2].loc[features[2].user_id == id]
     user_features = user_features.drop("user_id", axis=1)
 
+    # This part is used because of different table formats in local data storage and PgSQL database
     try:
         posts_features = features[1].drop(["text", "index"], axis=1)
     except KeyError:
@@ -211,6 +262,27 @@ def get_recommended_feed(
     model_test: Union[CatBoostClassifier, None] = None,
     features_test: Union[List[pd.DataFrame], None] = None,
 ) -> Response:
+    """For a given user_id and time return a limit number of recommended posts.
+
+    Args:
+        id (int): User id.
+        time (datetime): Date and time when recommendation will be made.
+        limit (int): The number of given recommendations.
+        model_control (CatBoostClassifier): Model for control group.
+        features_control (List[pd.DataFrame]): Features for control group.
+        model_test (Union[CatBoostClassifier, None], optional): Model for test group.
+        Defaults to None if service is used in general mode instead of A/B testing.
+        features_test (Union[List[pd.DataFrame], None], optional): Features for test group.
+        Defaults to None if service is used in general mode instead of A/B testing.
+
+    Raises:
+        ValueError: If got unknown user group.
+
+    Returns:
+        Response: The response object which contains information about user group
+        and limit number of recommendations: post_id, topic and post text.
+    """
+
     # Choose user group
     user_group = get_user_group(id=id)
     logger.info(f"User group {user_group}.")
