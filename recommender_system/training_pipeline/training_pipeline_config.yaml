@@ -1,4 +1,3 @@
-#pg_connection: postgresql://robot-startml-ro:pheiph0hahj1Vaif@postgres.lab.karpov.courses:6432/startml
 pg_connection:
 local_data_storage: ../data
 random_state: 10101
