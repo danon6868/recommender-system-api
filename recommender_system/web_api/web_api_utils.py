@@ -32,7 +32,7 @@ def read_config(
 
 
 WEB_API_CONFIG = read_config()
-TRAINING_CONFIG = read_config("../training_pipeline/training_pipeline_config.yaml")
+TRAINING_CONFIG = read_config("../training_pipeline_config.yaml")
 
 
 def batch_load_sql(query: str, connection: str) -> pd.DataFrame:

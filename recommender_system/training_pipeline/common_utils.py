@@ -7,7 +7,7 @@ from loguru import logger
 
 
 def read_config(
-    config_path: Union[str, Path] = Path("training_pipeline_config.yaml")
+    config_path: Union[str, Path] = Path("../training_pipeline_config.yaml")
 ) -> Dict[str, Union[str, float, int]]:
     """Read workflow config.yaml.
 

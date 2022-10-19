@@ -24,11 +24,11 @@ training_params:
       "source",
     ]
   default_catboost_params:
-    iterations: 5
+    iterations: 100
     learning_rate: 1
     depth: 2
   optuna_search:
-    n_trials: 3
+    n_trials: 50
     search_params:
       objective: ["Logloss", "CrossEntropy"]
       colsample_bylevel: [0.01, 0.1]

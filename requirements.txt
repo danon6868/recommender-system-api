@@ -5,10 +5,10 @@ pandas==1.5.0
 psycopg2-binary==2.9.4
 sqlalchemy==1.4.41
 tqdm==4.64.1
-torch
-torchvision
-torchaudio
-transformers
+torch==1.12.1+cu116
+torchvision==0.13.1+cu116
+torchaudio==0.12.1+cu116
+transformers==4.23.1
 scikit-learn==1.1.2
 nltk==3.7
 catboost==1.1
