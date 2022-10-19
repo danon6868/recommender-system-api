@@ -1,5 +1,22 @@
 # Recommender system API
 
+`CatBoost` was used as a model for recommendations in this work. Four text feature extraction methods were used: `TF-IDF`, `BERT`, `RoBERTa` and `DistilBERT`. Models were compared using A/B testing based on `hitrate@5` metric. The baseline model with `TF-IDF` has 0.457 `hitrate@5` while the best model with `RoBERTa` and with selected HP has reached 0.575.
+
+## Content
+
+1. [Purpose and objectives](#purpose-and-objectives)
+2. [Data description](#data-description)
+3. [Workflow overview](#workflow-overview)
+    * [EDA and baseline model training](#eda-and-baseline-model-training)
+    * [Training pipeline](#training-pipeline)
+    * [Web API](#web-api)
+    * [A/B test results analysis](#ab-test-results-analysis)
+4. [Usage](#usage)
+    * [Training pipeline running](#training-pipeline-running)
+    * [Web service running](#web-service-running)
+    * [Web service in docker container](#web-service-in-docker-container)
+5. [Contacts](#contacts)
+
 ## Purpose and objectives
 
 ### Purpose
@@ -20,20 +37,6 @@
 
 * Based on saved models and saved data, create endpoint for post recommendations
 * Create an A/B testing system to compare different models
-
-## Results
-
-<figure>
-<img src="recommender_system/media/optimization_history_plots.svg">
-<figcaption align = "center"><b>Fig. 1 - Optimization history. A) TF-IDF, B) RoBERTa, C) BERT, D) DistilBERT.</b></figcaption>
-</figure>
-
-<figure>
-<img src="recommender_system/media/hp_importances.svg">
-<figcaption align = "center"><b>Fig. 2 - Hyperparameter importance. A) TF-IDF, B) RoBERTa, C) BERT, D) DistilBERT.</b></figcaption>
-</figure>
-
-
 
 ## Data description
 
@@ -147,7 +150,7 @@ There are several options for working:
 * Run web service locally
 * Run web service locally in docker container
 
-### Training pipeline
+### Training pipeline running
 
 You need `git` to be installed. Open terminal (`Crtl+Alt+t`) and run following commands:
 
@@ -168,7 +171,7 @@ python training_pipeline.py
 
 At the end you will have a saved model and history of HP optimization in `recommender_system/training_pipeline/training_results` directory.
 
-### Web service
+### Web service running
 
 Your don't need `pytorch`, `transformers` and other heavy libraries, so you should use another file with requirements.
 
