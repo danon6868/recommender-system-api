@@ -23,7 +23,17 @@
 
 ## Results
 
-About used models, optuna history and metrics, also example of recommendations.
+<figure>
+<img src="recommender_system/media/optimization_history_plots.svg">
+<figcaption align = "center"><b>Fig. 1 - Optimization history. A) TF-IDF, B) RoBERTa, C) BERT, D) DistilBERT.</b></figcaption>
+</figure>
+
+<figure>
+<img src="recommender_system/media/hp_importances.svg">
+<figcaption align = "center"><b>Fig. 2 - Hyperparameter importance. A) TF-IDF, B) RoBERTa, C) BERT, D) DistilBERT.</b></figcaption>
+</figure>
+
+
 
 ## Data description
 
@@ -122,7 +132,7 @@ Web API settings can be found in `recommender_system/web_api/web_api_config.yaml
 
 #### Results:
 
-* A/B test was done
+* A/B test was conducted
 * Analysis of its results showed that the metric improved significantly
 
 The detailed report in `jupyter notebook` can be found [here](/recommender_system/ab_test_results_analysis/ab_test_result_analysis.ipynb).
