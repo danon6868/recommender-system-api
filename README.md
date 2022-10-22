@@ -1,6 +1,6 @@
 # Recommender system API
 
-`CatBoost` was used as a model for recommendations in this work. Four text feature extraction methods were used: `TF-IDF`, `BERT`, `RoBERTa` and `DistilBERT`. Models were compared using A/B testing based on `hitrate@5` metric. The baseline model with `TF-IDF` has 0.457 `hitrate@5` while the best model with `RoBERTa` and with selected HP has reached 0.575.
+**CatBoost** was used as a model for recommendations in this work. Four text feature extraction methods were used: **TF-IDF**, **BERT**, **RoBERTa** and **DistilBERT**. Models were compared using A/B testing based on *hitrate@5* metric. The baseline model with **TF-IDF** has 0.457 *hitrate@5* while the best model with **RoBERTa** and with selected HP has reached 0.575.
 
 ## Content
 
